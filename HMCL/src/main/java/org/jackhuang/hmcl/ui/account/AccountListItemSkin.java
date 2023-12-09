@@ -150,7 +150,7 @@ public class AccountListItemSkin extends SkinBase<AccountListItem> {
         JFXButton btnUpload = new JFXButton();
         SpinnerPane spinnerUpload = new SpinnerPane();
         btnUpload.setOnMouseClicked(e -> {
-            Task<?> uploadTask = skinnable.uploadSkin();
+            Task<?> uploadTask = null;
             if (uploadTask != null) {
                 spinnerUpload.showSpinner();
                 uploadTask

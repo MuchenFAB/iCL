@@ -36,9 +36,9 @@ public class AboutPage extends StackPane {
         {
             IconedTwoLineListItem launcher = new IconedTwoLineListItem();
             launcher.setImage(new Image("/assets/img/craft_table.png"));
-            launcher.setTitle("Hello Minecraft! Launcher");
+            launcher.setTitle("illusion Craft Launcher");
             launcher.setSubtitle(Metadata.VERSION);
-            launcher.setExternalLink("https://hmcl.huangyuhui.net");
+            launcher.setExternalLink("https://icl.illusioncraft.cn/");
 
             IconedTwoLineListItem author = new IconedTwoLineListItem();
             author.setImage(new Image("/assets/img/yellow_fish.png"));
@@ -51,17 +51,16 @@ public class AboutPage extends StackPane {
 
         ComponentList thanks = new ComponentList();
         {
+            IconedTwoLineListItem MuchenFAB = new IconedTwoLineListItem();
+            MuchenFAB.setTitle("MuchenFAB");
+            MuchenFAB.setSubtitle(i18n("构建iCL"));
+            MuchenFAB.setExternalLink("https://sbmuchen.shop/");
+
             IconedTwoLineListItem yushijinhun = new IconedTwoLineListItem();
             yushijinhun.setImage(new Image("/assets/img/yushijinhun.png"));
             yushijinhun.setTitle("yushijinhun");
             yushijinhun.setSubtitle(i18n("about.thanks_to.yushijinhun.statement"));
             yushijinhun.setExternalLink("https://yushi.moe/");
-
-            IconedTwoLineListItem MuchenFAB = new IconedTwoLineListItem();
-            MuchenFAB.setImage(null);
-            MuchenFAB.setTitle("MuchenFAB");
-            MuchenFAB.setSubtitle(i18n("about.thanks_to.MuchenFAB.statement"));
-            MuchenFAB.setExternalLink("https://sbmuchen.shop/");
 
             IconedTwoLineListItem bangbang93 = new IconedTwoLineListItem();
             bangbang93.setImage(new Image("/assets/img/bangbang93.png"));
@@ -81,13 +80,8 @@ public class AboutPage extends StackPane {
             gamerteam.setSubtitle(i18n("about.thanks_to.gamerteam.statement"));
             gamerteam.setExternalLink("http://www.zhaisoul.com/");
 
-            IconedTwoLineListItem redLnn = new IconedTwoLineListItem();
-            redLnn.setTitle("Red_lnn");
-            redLnn.setImage(new Image("/assets/img/red_lnn.png"));
-            redLnn.setSubtitle(i18n("about.thanks_to.red_lnn.statement"));
 
-
-            thanks.getContent().setAll(yushijinhun, bangbang93, glavo, gamerteam, redLnn, MuchenFAB);
+            thanks.getContent().setAll(yushijinhun, bangbang93, glavo, MuchenFAB);
         }
 
         ComponentList dep = new ComponentList();
@@ -117,10 +111,6 @@ public class AboutPage extends StackPane {
             fxgson.setSubtitle("Copyright © 2016 Joffrey Bion.\nLicensed under the MIT License.");
             fxgson.setExternalLink("https://github.com/joffrey-bion/fx-gson");
 
-            IconedTwoLineListItem constantPoolScanner = new IconedTwoLineListItem();
-            constantPoolScanner.setTitle("Constant Pool Scanner");
-            constantPoolScanner.setSubtitle("Copyright © 1997-2010 Oracle and/or its affiliates.\nLicensed under the GPL 2 or the CDDL.");
-            constantPoolScanner.setExternalLink("https://github.com/jenkinsci/constant-pool-scanner");
 
             IconedTwoLineListItem openNBT = new IconedTwoLineListItem();
             openNBT.setTitle("OpenNBT");
@@ -132,7 +122,7 @@ public class AboutPage extends StackPane {
             minecraftJFXSkin.setSubtitle("Copyright © 2016 InfinityStudio.\nLicensed under the GPL 3.");
             minecraftJFXSkin.setExternalLink("https://github.com/InfinityStudio/minecraft-jfx-skin");
 
-            dep.getContent().setAll(javafx, jfoenix, gson, xz, fxgson, constantPoolScanner, openNBT, minecraftJFXSkin);
+            dep.getContent().setAll(javafx, jfoenix, gson, xz, fxgson, openNBT, minecraftJFXSkin);
         }
 
         ComponentList legal = new ComponentList();

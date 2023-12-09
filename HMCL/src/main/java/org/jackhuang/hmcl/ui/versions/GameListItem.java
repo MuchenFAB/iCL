@@ -90,7 +90,6 @@ public class GameListItem extends Control {
         Versions.modifyGameSettings(profile, version);
     }
 
-
     public boolean canUpdate() {
         return isModpack;
     }

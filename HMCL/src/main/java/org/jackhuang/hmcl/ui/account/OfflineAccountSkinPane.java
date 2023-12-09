@@ -76,7 +76,7 @@ public class OfflineAccountSkinPane extends StackPane {
         canvasPane.setPrefWidth(300);
         canvasPane.setPrefHeight(300);
         pane.setCenter(canvas);
-        canvas.getAnimationPlayer().addSkinAnimation(new SkinAniWavingArms(120, 2000, 7.5, canvas), new SkinAniRunning(100, 100, 30, canvas));
+        canvas.getAnimationPlayer().addSkinAnimation(new SkinAniWavingArms(100, 2000, 7.5, canvas), new SkinAniRunning(100, 100, 30, canvas));
         canvas.enableRotation(.5);
 
         canvas.addEventHandler(DragEvent.DRAG_OVER, e -> {
@@ -111,7 +111,6 @@ public class OfflineAccountSkinPane extends StackPane {
                 new MultiFileItem.Option<>("Steve", Skin.Type.STEVE),
                 new MultiFileItem.Option<>("Alex", Skin.Type.ALEX),
                 new MultiFileItem.Option<>(i18n("account.skin.type.local_file"), Skin.Type.LOCAL_FILE),
-                new MultiFileItem.Option<>("LittleSkin", Skin.Type.LITTLE_SKIN),
                 new MultiFileItem.Option<>(i18n("account.skin.type.csl_api"), Skin.Type.CUSTOM_SKIN_LOADER_API)
         ));
 
@@ -160,11 +159,6 @@ public class OfflineAccountSkinPane extends StackPane {
                 case STEVE:
                 case ALEX:
                     break;
-                case LITTLE_SKIN:
-                    HintPane hint = new HintPane(MessageDialogPane.MessageType.INFO);
-                    hint.setText(i18n("account.skin.type.little_skin.hint"));
-                    gridPane.addRow(0, hint);
-                    break;
                 case LOCAL_FILE:
                     gridPane.addRow(0, new Label(i18n("account.skin.model")), modelCombobox);
                     gridPane.addRow(1, new Label(i18n("account.skin")), skinSelector);
@@ -185,14 +179,14 @@ public class OfflineAccountSkinPane extends StackPane {
             fireEvent(new DialogCloseEvent());
         });
 
-        JFXHyperlink littleSkinLink = new JFXHyperlink(i18n("account.skin.type.little_skin"));
-        littleSkinLink.setOnAction(e -> FXUtils.openLink("https://skin.illusioncraft.cn/"));
+        JFXHyperlink illusionLink = new JFXHyperlink(i18n("account.skin.type.illusion"));
+        illusionLink.setOnAction(e -> FXUtils.openLink("https://skin.illusioncraft.cn/"));
         JFXButton cancelButton = new JFXButton(i18n("button.cancel"));
         cancelButton.getStyleClass().add("dialog-cancel");
         cancelButton.setOnAction(e -> fireEvent(new DialogCloseEvent()));
         onEscPressed(this, cancelButton::fire);
 
-        layout.setActions(littleSkinLink, acceptButton, cancelButton);
+        layout.setActions(illusionLink, acceptButton, cancelButton);
     }
 
     private Skin getSkin() {

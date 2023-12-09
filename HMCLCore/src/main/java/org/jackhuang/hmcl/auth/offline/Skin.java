@@ -46,55 +46,75 @@ import static org.jackhuang.hmcl.util.Pair.pair;
 
 public class Skin {
 
-    public enum Type {
-        DEFAULT,
-        ALEX,
-        ARI,
-        EFE,
-        KAI,
-        MAKENA,
-        NOOR,
-        STEVE,
-        SUNNY,
-        ZURI,
-        LOCAL_FILE,
-        LITTLE_SKIN,
-        CUSTOM_SKIN_LOADER_API,
-        YGGDRASIL_API;
+    public Task<LoadedSkin> load(String username) {
+        switch (type) {
+            case DEFAULT:
+                return Task.supplyAsync(() -> null);
+            case ALEX:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/alex.png")), null));
+            case ARI:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/ari.png")), null));
+            case EFE:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/efe.png")), null));
+            case KAI:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/kai.png")), null));
+            case MAKENA:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/makena.png")), null));
+            case NOOR:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/noor.png")), null));
+            case STEVE:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/steve.png")), null));
+            case SUNNY:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/sunny.png")), null));
+            case ZURI:
+                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/zuri.png")), null));
+            case LOCAL_FILE:
+                return Task.supplyAsync(() -> {
+                    Texture skin = null, cape = null;
+                    Optional<Path> skinPath = FileUtils.tryGetPath(localSkinPath);
+                    Optional<Path> capePath = FileUtils.tryGetPath(localCapePath);
+                    if (skinPath.isPresent()) skin = Texture.loadTexture(Files.newInputStream(skinPath.get()));
+                    if (capePath.isPresent()) cape = Texture.loadTexture(Files.newInputStream(capePath.get()));
+                    return new LoadedSkin(getTextureModel(), skin, cape);
+                });
+            case ILLUSION_SKIN:
+            case CUSTOM_SKIN_LOADER_API:
+                String realCslApi = type == Type.ILLUSION_SKIN ? "https://skin.illusioncraft.cn/" : StringUtils.removeSuffix(cslApi, "/");
+                return Task.composeAsync(() -> new GetTask(new URL(String.format("%s/%s.json", realCslApi, username))))
+                        .thenComposeAsync(json -> {
+                            SkinJson result = JsonUtils.GSON.fromJson(json, SkinJson.class);
 
-        public static Type fromStorage(String type) {
-            switch (type) {
-                case "default":
-                    return DEFAULT;
-                case "alex":
-                    return ALEX;
-                case "ari":
-                    return ARI;
-                case "efe":
-                    return EFE;
-                case "kai":
-                    return KAI;
-                case "makena":
-                    return MAKENA;
-                case "noor":
-                    return NOOR;
-                case "steve":
-                    return STEVE;
-                case "sunny":
-                    return SUNNY;
-                case "zuri":
-                    return ZURI;
-                case "local_file":
-                    return LOCAL_FILE;
-                case "little_skin":
-                    return LITTLE_SKIN;
-                case "custom_skin_loader_api":
-                    return CUSTOM_SKIN_LOADER_API;
-                case "yggdrasil_api":
-                    return YGGDRASIL_API;
-                default:
-                    return null;
-            }
+                            if (!result.hasSkin()) {
+                                return Task.supplyAsync(() -> null);
+                            }
+
+                            return Task.allOf(
+                                    Task.supplyAsync(result::getModel),
+                                    result.getHash() == null ? Task.supplyAsync(() -> null) : new FetchBytesTask(new URL(String.format("%s/textures/%s", realCslApi, result.getHash())), 3),
+                                    result.getCapeHash() == null ? Task.supplyAsync(() -> null) : new FetchBytesTask(new URL(String.format("%s/textures/%s", realCslApi, result.getCapeHash())), 3)
+                            );
+                        }).thenApplyAsync(result -> {
+                            if (result == null) {
+                                return null;
+                            }
+
+                            Texture skin, cape;
+                            if (result.get(1) != null) {
+                                skin = Texture.loadTexture((InputStream) result.get(1));
+                            } else {
+                                skin = null;
+                            }
+
+                            if (result.get(2) != null) {
+                                cape = Texture.loadTexture((InputStream) result.get(2));
+                            } else {
+                                cape = null;
+                            }
+
+                            return new LoadedSkin((TextureModel) result.get(0), skin, cape);
+                        });
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
@@ -132,75 +152,54 @@ public class Skin {
         return localCapePath;
     }
 
-    public Task<LoadedSkin> load(String username) {
-        switch (type) {
-            case DEFAULT:
-                return Task.supplyAsync(() -> null);
-            case ALEX:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/alex.png")), null));
-            case ARI:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/ari.png")), null));
-            case EFE:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/efe.png")), null));
-            case KAI:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/kai.png")), null));
-            case MAKENA:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/makena.png")), null));
-            case NOOR:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.ALEX, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/noor.png")), null));
-            case STEVE:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/steve.png")), null));
-            case SUNNY:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/sunny.png")), null));
-            case ZURI:
-                return Task.supplyAsync(() -> new LoadedSkin(TextureModel.STEVE, Texture.loadTexture(Skin.class.getResourceAsStream("/assets/img/skin/zuri.png")), null));
-            case LOCAL_FILE:
-                return Task.supplyAsync(() -> {
-                    Texture skin = null, cape = null;
-                    Optional<Path> skinPath = FileUtils.tryGetPath(localSkinPath);
-                    Optional<Path> capePath = FileUtils.tryGetPath(localCapePath);
-                    if (skinPath.isPresent()) skin = Texture.loadTexture(Files.newInputStream(skinPath.get()));
-                    if (capePath.isPresent()) cape = Texture.loadTexture(Files.newInputStream(capePath.get()));
-                    return new LoadedSkin(getTextureModel(), skin, cape);
-                });
-            case LITTLE_SKIN:
-            case CUSTOM_SKIN_LOADER_API:
-                String realCslApi = type == Type.LITTLE_SKIN ? "https://skin.illusioncraft.cn/" : StringUtils.removeSuffix(cslApi, "/");
-                return Task.composeAsync(() -> new GetTask(new URL(String.format("%s/%s.json", realCslApi, username))))
-                        .thenComposeAsync(json -> {
-                            SkinJson result = JsonUtils.GSON.fromJson(json, SkinJson.class);
+    public enum Type {
+        DEFAULT,
+        ALEX,
+        ARI,
+        EFE,
+        KAI,
+        MAKENA,
+        NOOR,
+        STEVE,
+        SUNNY,
+        ZURI,
+        LOCAL_FILE,
+        CUSTOM_SKIN_LOADER_API,
+        YGGDRASIL_API, ILLUSION_SKIN;
 
-                            if (!result.hasSkin()) {
-                                return Task.supplyAsync(() -> null);
-                            }
-
-                            return Task.allOf(
-                                    Task.supplyAsync(result::getModel),
-                                    result.getHash() == null ? Task.supplyAsync(() -> null) : new FetchBytesTask(new URL(String.format("%s/textures/%s", realCslApi, result.getHash())), 3),
-                                    result.getCapeHash() == null ? Task.supplyAsync(() -> null) : new FetchBytesTask(new URL(String.format("%s/textures/%s", realCslApi, result.getCapeHash())), 3)
-                            );
-                        }).thenApplyAsync(result -> {
-                            if (result == null) {
-                                return null;
-                            }
-
-                            Texture skin, cape;
-                            if (result.get(1) != null) {
-                                skin = Texture.loadTexture((InputStream) result.get(1));
-                            } else {
-                                skin = null;
-                            }
-
-                            if (result.get(2) != null) {
-                                cape = Texture.loadTexture((InputStream) result.get(2));
-                            } else {
-                                cape = null;
-                            }
-
-                            return new LoadedSkin((TextureModel) result.get(0), skin, cape);
-                        });
-            default:
-                throw new UnsupportedOperationException();
+        public static Type fromStorage(String type) {
+            switch (type) {
+                case "default":
+                    return DEFAULT;
+                case "alex":
+                    return ALEX;
+                case "ari":
+                    return ARI;
+                case "efe":
+                    return EFE;
+                case "kai":
+                    return KAI;
+                case "makena":
+                    return MAKENA;
+                case "noor":
+                    return NOOR;
+                case "steve":
+                    return STEVE;
+                case "sunny":
+                    return SUNNY;
+                case "zuri":
+                    return ZURI;
+                case "local_file":
+                    return LOCAL_FILE;
+                case "illusion_skin":
+                    return ILLUSION_SKIN;
+                case "custom_skin_loader_api":
+                    return CUSTOM_SKIN_LOADER_API;
+                case "yggdrasil_api":
+                    return YGGDRASIL_API;
+                default:
+                    return null;
+            }
         }
     }
 

@@ -31,11 +31,13 @@ public final class Metadata {
     private Metadata() {}
 
     public static final String NAME = "iCL";
+    public static final String ver = "Release 3.1.0";
+
     public static final String FULL_NAME = "illusion Craft Launcher";
-    public static final String VERSION = System.getProperty("hmcl.version.override", JarUtils.getManifestAttribute("Implementation-Version", "@develop@"));
+    public static final String VERSION = System.getProperty("hmcl.version.override", ver);
 
     public static final String TITLE = NAME + " " + VERSION;
-    public static final String FULL_TITLE = FULL_NAME + " v" + VERSION;
+    public static final String FULL_TITLE = FULL_NAME + " " + VERSION;
 
     public static final String BUILD_CHANNEL = JarUtils.getManifestAttribute("Build-Channel", "nightly");
     public static final String GITHUB_SHA = JarUtils.getManifestAttribute("GitHub-SHA", null);

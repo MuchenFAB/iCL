@@ -172,6 +172,7 @@ public class VersionPage extends DecoratorAnimatedPage implements DecoratorPage 
     }
 
 
+
     private void updateGame() {
         Versions.updateVersion(getProfile(), getVersion());
     }
@@ -298,6 +299,10 @@ public class VersionPage extends DecoratorAnimatedPage implements DecoratorPage 
                             upgradeItem.setLeftGraphic(wrap(SVG::update));
                             upgradeItem.visibleProperty().bind(control.currentVersionUpgradable);
                             upgradeItem.setOnAction(e -> control.updateGame());
+                        })
+                        .addNavigationDrawerItem(testGameItem -> {
+                            testGameItem.setTitle(i18n("version.launch.test"));
+                            testGameItem.setLeftGraphic(wrap(SVG::rocketLaunchOutline));
                         })
                         .addNavigationDrawerItem(browseMenuItem -> {
                             browseMenuItem.setTitle(i18n("settings.game.exploration"));

@@ -25,32 +25,20 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Skin;
-import javafx.scene.image.Image;
-import javafx.stage.FileChooser;
 import org.jackhuang.hmcl.auth.Account;
 import org.jackhuang.hmcl.auth.AuthenticationException;
 import org.jackhuang.hmcl.auth.CredentialExpiredException;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorAccount;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorServer;
-import org.jackhuang.hmcl.auth.microsoft.MicrosoftAccount;
 import org.jackhuang.hmcl.auth.offline.OfflineAccount;
 import org.jackhuang.hmcl.auth.yggdrasil.CompleteGameProfile;
 import org.jackhuang.hmcl.auth.yggdrasil.TextureType;
 import org.jackhuang.hmcl.auth.yggdrasil.YggdrasilAccount;
 import org.jackhuang.hmcl.setting.Accounts;
-import org.jackhuang.hmcl.task.Schedulers;
 import org.jackhuang.hmcl.task.Task;
-import org.jackhuang.hmcl.ui.Controllers;
 import org.jackhuang.hmcl.ui.DialogController;
-import org.jackhuang.hmcl.ui.FXUtils;
-import org.jackhuang.hmcl.ui.construct.MessageDialogPane.MessageType;
-import org.jackhuang.hmcl.util.skin.InvalidSkinException;
-import org.jackhuang.hmcl.util.skin.NormalizedSkin;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -133,8 +121,7 @@ public class AccountListItem extends RadioButton {
             } else {
                 return createBooleanBinding(() -> true);
             }
-        } else if (account instanceof OfflineAccount || account instanceof MicrosoftAccount) {
-            return createBooleanBinding(() -> true);
+
         } else {
             return createBooleanBinding(() -> false);
         }
@@ -144,50 +131,7 @@ public class AccountListItem extends RadioButton {
      * @return the skin upload task, null if no file is selected
      */
     @Nullable
-    public Task<?> uploadSkin() {
-        if (account instanceof OfflineAccount) {
-            Controllers.dialog(new OfflineAccountSkinPane((OfflineAccount) account));
-            return null;
-        }
-        if (account instanceof MicrosoftAccount) {
-            FXUtils.openLink("https://www.minecraft.net/msaprofile/mygames/editskin");
-            return null;
-        }
-        if (!(account instanceof YggdrasilAccount)) {
-            return null;
-        }
 
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(i18n("account.skin.upload"));
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(i18n("account.skin.file"), "*.png"));
-        File selectedFile = chooser.showOpenDialog(Controllers.getStage());
-        if (selectedFile == null) {
-            return null;
-        }
-
-        return refreshAsync()
-                .thenRunAsync(() -> {
-                    Image skinImg;
-                    try (FileInputStream input = new FileInputStream(selectedFile)) {
-                        skinImg = new Image(input);
-                    } catch (IOException e) {
-                        throw new InvalidSkinException("Failed to read skin image", e);
-                    }
-                    if (skinImg.isError()) {
-                        throw new InvalidSkinException("Failed to read skin image", skinImg.getException());
-                    }
-                    NormalizedSkin skin = new NormalizedSkin(skinImg);
-                    String model = skin.isSlim() ? "slim" : "";
-                    LOG.info("Uploading skin [" + selectedFile + "], model [" + model + "]");
-                    ((YggdrasilAccount) account).uploadSkin(model, selectedFile.toPath());
-                })
-                .thenComposeAsync(refreshAsync())
-                .whenComplete(Schedulers.javafx(), e -> {
-                    if (e != null) {
-                        Controllers.dialog(Accounts.localizeErrorMessage(e), i18n("account.skin.upload.failed"), MessageType.ERROR);
-                    }
-                });
-    }
 
     public void remove() {
         Accounts.getAccounts().remove(account);
