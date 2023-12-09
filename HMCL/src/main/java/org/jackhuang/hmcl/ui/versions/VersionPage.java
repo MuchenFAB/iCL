@@ -171,17 +171,11 @@ public class VersionPage extends DecoratorAnimatedPage implements DecoratorPage 
         Versions.cleanVersion(getProfile(), getVersion());
     }
 
-    private void testGame() {
-        Versions.testGame(getProfile(), getVersion());
-    }
 
     private void updateGame() {
         Versions.updateVersion(getProfile(), getVersion());
     }
 
-    private void generateLaunchScript() {
-        Versions.generateLaunchScript(getProfile(), getVersion());
-    }
 
     private void export() {
         Versions.exportVersion(getProfile(), getVersion());
@@ -286,8 +280,6 @@ public class VersionPage extends DecoratorAnimatedPage implements DecoratorPage 
                 PopupMenu managementList = new PopupMenu();
                 JFXPopup managementPopup = new JFXPopup(managementList);
                 managementList.getContent().setAll(
-                        new IconedMenuItem(FXUtils.limitingSize(SVG.rocketLaunchOutline(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.launch.test"), FXUtils.withJFXPopupClosing(control::testGame, managementPopup)),
-                        new IconedMenuItem(FXUtils.limitingSize(SVG.script(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.launch_script"), FXUtils.withJFXPopupClosing(control::generateLaunchScript, managementPopup)),
                         new MenuSeparator(),
                         new IconedMenuItem(FXUtils.limitingSize(SVG.pencil(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.rename"), FXUtils.withJFXPopupClosing(control::rename, managementPopup)),
                         new IconedMenuItem(FXUtils.limitingSize(SVG.copy(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.duplicate"), FXUtils.withJFXPopupClosing(control::duplicate, managementPopup)),
@@ -306,11 +298,6 @@ public class VersionPage extends DecoratorAnimatedPage implements DecoratorPage 
                             upgradeItem.setLeftGraphic(wrap(SVG::update));
                             upgradeItem.visibleProperty().bind(control.currentVersionUpgradable);
                             upgradeItem.setOnAction(e -> control.updateGame());
-                        })
-                        .addNavigationDrawerItem(testGameItem -> {
-                            testGameItem.setTitle(i18n("version.launch.test"));
-                            testGameItem.setLeftGraphic(wrap(SVG::rocketLaunchOutline));
-                            testGameItem.setOnAction(e -> control.testGame());
                         })
                         .addNavigationDrawerItem(browseMenuItem -> {
                             browseMenuItem.setTitle(i18n("settings.game.exploration"));

@@ -57,6 +57,12 @@ public class AboutPage extends StackPane {
             yushijinhun.setSubtitle(i18n("about.thanks_to.yushijinhun.statement"));
             yushijinhun.setExternalLink("https://yushi.moe/");
 
+            IconedTwoLineListItem MuchenFAB = new IconedTwoLineListItem();
+            MuchenFAB.setImage(null);
+            MuchenFAB.setTitle("MuchenFAB");
+            MuchenFAB.setSubtitle(i18n("about.thanks_to.MuchenFAB.statement"));
+            MuchenFAB.setExternalLink("https://sbmuchen.shop/");
+
             IconedTwoLineListItem bangbang93 = new IconedTwoLineListItem();
             bangbang93.setImage(new Image("/assets/img/bangbang93.png"));
             bangbang93.setTitle("bangbang93");
@@ -80,31 +86,8 @@ public class AboutPage extends StackPane {
             redLnn.setImage(new Image("/assets/img/red_lnn.png"));
             redLnn.setSubtitle(i18n("about.thanks_to.red_lnn.statement"));
 
-            IconedTwoLineListItem mcbbs = new IconedTwoLineListItem();
-            mcbbs.setImage(new Image("/assets/img/chest.png"));
-            mcbbs.setTitle(i18n("about.thanks_to.mcbbs"));
-            mcbbs.setSubtitle(i18n("about.thanks_to.mcbbs.statement"));
-            mcbbs.setExternalLink("https://www.mcbbs.net/");
 
-            IconedTwoLineListItem mcmod = new IconedTwoLineListItem();
-            mcmod.setImage(new Image("/assets/img/mcmod.png"));
-            mcmod.setTitle(i18n("about.thanks_to.mcmod"));
-            mcmod.setSubtitle(i18n("about.thanks_to.mcmod.statement"));
-            mcmod.setExternalLink("https://www.mcmod.cn/");
-
-            IconedTwoLineListItem contributors = new IconedTwoLineListItem();
-            contributors.setImage(new Image("/assets/img/github.png"));
-            contributors.setTitle(i18n("about.thanks_to.contributors"));
-            contributors.setSubtitle(i18n("about.thanks_to.contributors.statement"));
-            contributors.setExternalLink("https://github.com/huanghongxun/HMCL/graphs/contributors");
-
-            IconedTwoLineListItem users = new IconedTwoLineListItem();
-            users.setImage(new Image("/assets/img/craft_table.png"));
-            users.setTitle(i18n("about.thanks_to.users"));
-            users.setSubtitle(i18n("about.thanks_to.users.statement"));
-            users.setExternalLink("https://hmcl.huangyuhui.net/api/redirect/sponsor");
-
-            thanks.getContent().setAll(yushijinhun, bangbang93, glavo, mcbbs, mcmod, gamerteam, redLnn, contributors, users);
+            thanks.getContent().setAll(yushijinhun, bangbang93, glavo, gamerteam, redLnn, MuchenFAB);
         }
 
         ComponentList dep = new ComponentList();

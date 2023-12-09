@@ -85,17 +85,11 @@ public class GameListItem extends Control {
         Versions.openFolder(profile, version);
     }
 
-    public void launch() {
-        Versions.testGame(profile, version);
-    }
 
     public void modifyGameSettings() {
         Versions.modifyGameSettings(profile, version);
     }
 
-    public void generateLaunchScript() {
-        Versions.generateLaunchScript(profile, version);
-    }
 
     public boolean canUpdate() {
         return isModpack;

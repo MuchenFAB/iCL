@@ -76,7 +76,7 @@ public class OfflineAccountSkinPane extends StackPane {
         canvasPane.setPrefWidth(300);
         canvasPane.setPrefHeight(300);
         pane.setCenter(canvas);
-        canvas.getAnimationPlayer().addSkinAnimation(new SkinAniWavingArms(100, 2000, 7.5, canvas), new SkinAniRunning(100, 100, 30, canvas));
+        canvas.getAnimationPlayer().addSkinAnimation(new SkinAniWavingArms(120, 2000, 7.5, canvas), new SkinAniRunning(100, 100, 30, canvas));
         canvas.enableRotation(.5);
 
         canvas.addEventHandler(DragEvent.DRAG_OVER, e -> {
@@ -186,7 +186,7 @@ public class OfflineAccountSkinPane extends StackPane {
         });
 
         JFXHyperlink littleSkinLink = new JFXHyperlink(i18n("account.skin.type.little_skin"));
-        littleSkinLink.setOnAction(e -> FXUtils.openLink("https://littleskin.cn/"));
+        littleSkinLink.setOnAction(e -> FXUtils.openLink("https://skin.illusioncraft.cn/"));
         JFXButton cancelButton = new JFXButton(i18n("button.cancel"));
         cancelButton.getStyleClass().add("dialog-cancel");
         cancelButton.setOnAction(e -> fireEvent(new DialogCloseEvent()));
