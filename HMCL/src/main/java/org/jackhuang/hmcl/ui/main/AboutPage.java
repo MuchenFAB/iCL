@@ -51,10 +51,17 @@ public class AboutPage extends StackPane {
 
         ComponentList thanks = new ComponentList();
         {
-            IconedTwoLineListItem MuchenFAB = new IconedTwoLineListItem();
-            MuchenFAB.setTitle("MuchenFAB");
-            MuchenFAB.setSubtitle(i18n("构建iCL"));
-            MuchenFAB.setExternalLink("https://sbmuchen.shop/");
+            IconedTwoLineListItem illusion = new IconedTwoLineListItem();
+            illusion.setImage(new Image("/assets/img/illusion.png"));
+            illusion.setTitle("illusion团队");
+            illusion.setSubtitle(i18n("about.thanks_to.illusion.statement"));
+            illusion.setExternalLink("https://illusioncraft.cn/");
+
+            IconedTwoLineListItem muchen = new IconedTwoLineListItem();
+            muchen.setImage(new Image("/assets/img/muchen.png"));
+            muchen.setTitle("illusion团队");
+            muchen.setSubtitle(i18n("about.thanks_to.muchen.statement"));
+            muchen.setExternalLink("https://sbmuchen.shop/");
 
             IconedTwoLineListItem yushijinhun = new IconedTwoLineListItem();
             yushijinhun.setImage(new Image("/assets/img/yushijinhun.png"));
@@ -81,7 +88,7 @@ public class AboutPage extends StackPane {
             gamerteam.setExternalLink("http://www.zhaisoul.com/");
 
 
-            thanks.getContent().setAll(yushijinhun, bangbang93, glavo, MuchenFAB);
+            thanks.getContent().setAll(muchen, yushijinhun, bangbang93, glavo, illusion);
         }
 
         ComponentList dep = new ComponentList();

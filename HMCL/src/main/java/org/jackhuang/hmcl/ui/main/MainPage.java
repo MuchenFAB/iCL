@@ -19,9 +19,6 @@ package org.jackhuang.hmcl.ui.main;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPopup;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -37,17 +34,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import org.jackhuang.hmcl.Metadata;
 import org.jackhuang.hmcl.game.Version;
 import org.jackhuang.hmcl.setting.Profile;
 import org.jackhuang.hmcl.setting.Theme;
-import org.jackhuang.hmcl.ui.Controllers;
 import org.jackhuang.hmcl.ui.FXUtils;
 import org.jackhuang.hmcl.ui.SVG;
-import org.jackhuang.hmcl.ui.animation.AnimationUtils;
 import org.jackhuang.hmcl.ui.construct.AnnouncementCard;
-import org.jackhuang.hmcl.ui.construct.MessageDialogPane;
 import org.jackhuang.hmcl.ui.construct.PopupMenu;
 import org.jackhuang.hmcl.ui.construct.TwoLineListItem;
 import org.jackhuang.hmcl.ui.decorator.DecoratorPage;
@@ -66,7 +59,6 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.jackhuang.hmcl.setting.ConfigHolder.config;
-import static org.jackhuang.hmcl.ui.FXUtils.SINE;
 import static org.jackhuang.hmcl.util.i18n.I18n.i18n;
 
 public final class MainPage extends StackPane implements DecoratorPage {
@@ -78,14 +70,12 @@ public final class MainPage extends StackPane implements DecoratorPage {
     private final JFXPopup popup = new JFXPopup(menu);
 
     private final StringProperty currentGame = new SimpleStringProperty(this, "currentGame");
-    private final BooleanProperty showUpdate = new SimpleBooleanProperty(this, "showUpdate");
     private final ObjectProperty<RemoteVersion> latestVersion = new SimpleObjectProperty<>(this, "latestVersion");
     private final ObservableList<Version> versions = FXCollections.observableArrayList();
     private final ObservableList<Node> versionNodes;
     private Profile profile;
 
     private VBox announcementPane;
-    private final StackPane updatePane;
     private final JFXButton menuButton;
 
     {
@@ -123,15 +113,6 @@ public final class MainPage extends StackPane implements DecoratorPage {
             getChildren().add(announcementPane);
         }
 
-        updatePane = new StackPane();
-        updatePane.setVisible(false);
-        updatePane.getStyleClass().add("bubble");
-        FXUtils.setLimitWidth(updatePane, 230);
-        FXUtils.setLimitHeight(updatePane, 55);
-        StackPane.setAlignment(updatePane, Pos.TOP_RIGHT);
-        updatePane.setOnMouseClicked(e -> onUpgrade());
-        FXUtils.onChange(showUpdateProperty(), this::showUpdate);
-
         {
             HBox hBox = new HBox();
             hBox.setSpacing(12);
@@ -150,15 +131,6 @@ public final class MainPage extends StackPane implements DecoratorPage {
 
                 hBox.getChildren().setAll(lblIcon, prompt);
             }
-
-            JFXButton closeUpdateButton = new JFXButton();
-            closeUpdateButton.setGraphic(SVG.close(Theme.whiteFillBinding(), 10, 10));
-            StackPane.setAlignment(closeUpdateButton, Pos.TOP_RIGHT);
-            closeUpdateButton.getStyleClass().add("toggle-icon-tiny");
-            StackPane.setMargin(closeUpdateButton, new Insets(5));
-            closeUpdateButton.setOnMouseClicked(e -> closeUpdateBubble());
-
-            updatePane.getChildren().setAll(hBox, closeUpdateButton);
         }
 
         StackPane launchPane = new StackPane();
@@ -229,7 +201,7 @@ public final class MainPage extends StackPane implements DecoratorPage {
             launchPane.getChildren().setAll(launchButton, separator, menuButton);
         }
 
-        getChildren().addAll(updatePane, launchPane);
+        getChildren().addAll(launchPane);
 
         menu.setMaxHeight(365);
         menu.setMaxWidth(545);
@@ -243,35 +215,8 @@ public final class MainPage extends StackPane implements DecoratorPage {
         Bindings.bindContent(menu.getContent(), versionNodes);
     }
 
-    private void showUpdate(boolean show) {
-        doAnimation(show);
 
-        if (show && getLatestVersion() != null && !Objects.equals(config().getPromptedVersion(), getLatestVersion().getVersion())) {
-            Controllers.dialog("", i18n("update.bubble.title", getLatestVersion().getVersion()), MessageDialogPane.MessageType.INFO, () -> {
-                config().setPromptedVersion(getLatestVersion().getVersion());
-                onUpgrade();
-            });
-        }
-    }
 
-    private void doAnimation(boolean show) {
-        if (AnimationUtils.isAnimationEnabled()) {
-            Duration duration = Duration.millis(320);
-            Timeline nowAnimation = new Timeline();
-            nowAnimation.getKeyFrames().addAll(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(updatePane.translateXProperty(), show ? 260 : 0, SINE)),
-                    new KeyFrame(duration,
-                            new KeyValue(updatePane.translateXProperty(), show ? 0 : 260, SINE)));
-            if (show) nowAnimation.getKeyFrames().add(
-                    new KeyFrame(Duration.ZERO, e -> updatePane.setVisible(true)));
-            else nowAnimation.getKeyFrames().add(
-                    new KeyFrame(duration, e -> updatePane.setVisible(false)));
-            nowAnimation.play();
-        } else {
-            updatePane.setVisible(show);
-        }
-    }
 
 
     private void onMenu() {
@@ -286,10 +231,6 @@ public final class MainPage extends StackPane implements DecoratorPage {
         UpdateHandler.updateFrom(target);
     }
 
-    private void closeUpdateBubble() {
-        showUpdate.unbind();
-        showUpdate.set(false);
-    }
 
     public void hideAnnouncementPane() {
         if (announcementPane != null) {
@@ -318,17 +259,8 @@ public final class MainPage extends StackPane implements DecoratorPage {
         this.currentGame.set(currentGame);
     }
 
-    public boolean isShowUpdate() {
-        return showUpdate.get();
-    }
 
-    public BooleanProperty showUpdateProperty() {
-        return showUpdate;
-    }
 
-    public void setShowUpdate(boolean showUpdate) {
-        this.showUpdate.set(showUpdate);
-    }
 
     public RemoteVersion getLatestVersion() {
         return latestVersion.get();

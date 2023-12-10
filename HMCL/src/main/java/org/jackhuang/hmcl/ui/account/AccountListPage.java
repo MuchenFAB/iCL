@@ -137,7 +137,6 @@ public class AccountListPage extends DecoratorAnimatedPage implements DecoratorP
                 {
                     addAuthServerItem.getStyleClass().add("navigation-drawer-item");
                     addAuthServerItem.setTitle(i18n("account.injector.add"));
-                    addAuthServerItem.setSubtitle(i18n("account.methods.authlib_injector"));
                     addAuthServerItem.setActionButtonVisible(false);
                     addAuthServerItem.setLeftGraphic(wrap(SVG::plusCircleOutline));
                     addAuthServerItem.setOnAction(e -> Controllers.dialog(new AddAuthlibInjectorServerPane()));
