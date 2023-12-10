@@ -18,9 +18,15 @@
 package org.jackhuang.hmcl.ui.versions;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
+import javafx.stage.FileChooser;
+import org.jackhuang.hmcl.auth.Account;
 import org.jackhuang.hmcl.download.game.GameAssetDownloadTask;
 import org.jackhuang.hmcl.game.GameDirectoryType;
+import org.jackhuang.hmcl.game.GameRepository;
+import org.jackhuang.hmcl.game.LauncherHelper;
 import org.jackhuang.hmcl.mod.RemoteMod;
+import org.jackhuang.hmcl.setting.Accounts;
 import org.jackhuang.hmcl.setting.Profile;
 import org.jackhuang.hmcl.setting.Profiles;
 import org.jackhuang.hmcl.task.FileDownloadTask;
@@ -29,6 +35,8 @@ import org.jackhuang.hmcl.task.Task;
 import org.jackhuang.hmcl.task.TaskExecutor;
 import org.jackhuang.hmcl.ui.Controllers;
 import org.jackhuang.hmcl.ui.FXUtils;
+import org.jackhuang.hmcl.ui.account.CreateAccountPane;
+import org.jackhuang.hmcl.ui.construct.DialogCloseEvent;
 import org.jackhuang.hmcl.ui.construct.MessageDialogPane;
 import org.jackhuang.hmcl.ui.construct.PromptDialogPane;
 import org.jackhuang.hmcl.ui.construct.Validator;
@@ -40,12 +48,14 @@ import org.jackhuang.hmcl.util.TaskCancellationAction;
 import org.jackhuang.hmcl.util.io.FileUtils;
 import org.jackhuang.hmcl.util.platform.OperatingSystem;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import static org.jackhuang.hmcl.util.i18n.I18n.i18n;
@@ -179,8 +189,47 @@ public final class Versions {
         }
     }
 
+    public static void generateLaunchScript(Profile profile, String id) {
+        if (!checkVersionForLaunching(profile, id))
+            return;
+        ensureSelectedAccount(account -> {
+            GameRepository repository = profile.getRepository();
+            FileChooser chooser = new FileChooser();
+            if (repository.getRunDirectory(id).isDirectory())
+                chooser.setInitialDirectory(repository.getRunDirectory(id));
+            chooser.setTitle(i18n("version.launch_script.save"));
+            chooser.getExtensionFilters().add(OperatingSystem.CURRENT_OS == OperatingSystem.WINDOWS
+                    ? new FileChooser.ExtensionFilter(i18n("extension.bat"), "*.bat")
+                    : new FileChooser.ExtensionFilter(i18n("extension.sh"), "*.sh"));
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(i18n("extension.ps1"), "*.ps1"));
+            File file = chooser.showSaveDialog(Controllers.getStage());
+            if (file != null)
+                new LauncherHelper(profile, account, id).makeLaunchScript(file);
+        });
+    }
 
+    public static void launch(Profile profile) {
+        launch(profile, profile.getSelectedVersion());
+    }
 
+    public static void launch(Profile profile, String id) {
+        launch(profile, id, null);
+    }
+
+    public static void launch(Profile profile, String id, Consumer<LauncherHelper> injecter) {
+        if (!checkVersionForLaunching(profile, id))
+            return;
+        ensureSelectedAccount(account -> {
+            LauncherHelper launcherHelper = new LauncherHelper(profile, account, id);
+            if (injecter != null)
+                injecter.accept(launcherHelper);
+            launcherHelper.launch();
+        });
+    }
+
+    public static void testGame(Profile profile, String id) {
+        launch(profile, id, LauncherHelper::setTestMode);
+    }
 
     private static boolean checkVersionForLaunching(Profile profile, String id) {
         if (id == null || !profile.getRepository().isLoaded() || !profile.getRepository().hasVersion(id)) {
@@ -193,6 +242,23 @@ public final class Versions {
         }
     }
 
+    private static void ensureSelectedAccount(Consumer<Account> action) {
+        Account account = Accounts.getSelectedAccount();
+        if (account == null) {
+            CreateAccountPane dialog = new CreateAccountPane();
+            dialog.addEventHandler(DialogCloseEvent.CLOSE, e -> {
+                Account newAccount = Accounts.getSelectedAccount();
+                if (newAccount == null) {
+                    // user cancelled operation
+                } else {
+                    Platform.runLater(() -> action.accept(newAccount));
+                }
+            });
+            Controllers.dialog(dialog);
+        } else {
+            action.accept(account);
+        }
+    }
 
     public static void modifyGlobalSettings(Profile profile) {
         Controllers.getSettingsPage().showGameSettings(profile);
