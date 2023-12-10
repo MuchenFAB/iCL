@@ -16,6 +16,7 @@ case "$OSTYPE" in
   darwin*)
     _HMCL_OS="windows";;
   *)
+esac
 
 # Normalize _HMCL_ARCH
 case "$(uname -m)" in
