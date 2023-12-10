@@ -19,17 +19,12 @@ package org.jackhuang.hmcl.ui.main;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXRadioButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import org.jackhuang.hmcl.setting.EnumCommonDirectory;
 import org.jackhuang.hmcl.setting.Theme;
 import org.jackhuang.hmcl.ui.FXUtils;
@@ -51,8 +46,6 @@ public abstract class SettingsView extends StackPane {
     protected final ComponentSublist fileCommonLocationSublist;
     protected final Label lblUpdate;
     protected final Label lblUpdateSub;
-    protected final JFXRadioButton chkUpdateStable;
-    protected final JFXRadioButton chkUpdateDev;
     protected final JFXButton btnUpdate;
     protected final ScrollPane scroll;
 
@@ -69,10 +62,6 @@ public abstract class SettingsView extends StackPane {
                 ComponentList settingsPane = new ComponentList();
                 {
                     {
-                        StackPane sponsorPane = new StackPane();
-                        sponsorPane.setCursor(Cursor.HAND);
-                        sponsorPane.setOnMouseClicked(e -> onSponsor());
-                        sponsorPane.setPadding(new Insets(8, 0, 8, 0));
 
                         GridPane gridPane = new GridPane();
 
@@ -88,17 +77,7 @@ public abstract class SettingsView extends StackPane {
                         row.setVgrow(Priority.SOMETIMES);
                         gridPane.getRowConstraints().setAll(row);
 
-                        {
-                            Label label = new Label(i18n("sponsor.hmcl"));
-                            label.setWrapText(true);
-                            label.setTextAlignment(TextAlignment.JUSTIFY);
-                            GridPane.setRowIndex(label, 0);
-                            GridPane.setColumnIndex(label, 0);
-                            gridPane.getChildren().add(label);
-                        }
 
-                        sponsorPane.getChildren().setAll(gridPane);
-                        settingsPane.getContent().add(sponsorPane);
                     }
                 }
 
@@ -126,20 +105,7 @@ public abstract class SettingsView extends StackPane {
                         updatePane.setHeaderRight(btnUpdate);
                     }
 
-                    {
-                        VBox content = new VBox();
-                        content.setSpacing(8);
 
-                        chkUpdateStable = new JFXRadioButton(i18n("update.channel.stable"));
-                        chkUpdateDev = new JFXRadioButton(i18n("update.channel.dev"));
-
-                        TextFlow noteWrapper = new TextFlow(new Text(i18n("update.note")));
-                        VBox.setMargin(noteWrapper, new Insets(10, 0, 0, 0));
-
-                        content.getChildren().setAll(chkUpdateStable, chkUpdateDev, noteWrapper);
-
-                        updatePane.getContent().add(content);
-                    }
                     settingsPane.getContent().add(updatePane);
                 }
 
@@ -171,9 +137,6 @@ public abstract class SettingsView extends StackPane {
                 {
                     BorderPane languagePane = new BorderPane();
 
-                    Label left = new Label(i18n("settings.launcher.language"));
-                    BorderPane.setAlignment(left, Pos.CENTER_LEFT);
-                    languagePane.setLeft(left);
 
                     cboLanguage = new JFXComboBox<>();
                     cboLanguage.setConverter(stringConverter(locale -> locale.getName(config().getLocalization().getResourceBundle())));

@@ -142,6 +142,7 @@ public class AboutPage extends StackPane {
             IconedTwoLineListItem claim = new IconedTwoLineListItem();
             claim.setTitle(i18n("about.claim"));
             claim.setSubtitle(i18n("about.claim.statement"));
+            claim.setExternalLink("/assets/html/icl_eula.html");
 
             IconedTwoLineListItem openSource = new IconedTwoLineListItem();
             openSource.setTitle(i18n("about.open_source"));
