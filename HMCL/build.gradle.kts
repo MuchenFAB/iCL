@@ -21,10 +21,10 @@ val buildNumber = System.getenv("BUILD_NUMBER")?.toInt().let { number ->
     } else {
         val shortCommit = System.getenv("GITHUB_SHA")?.toLowerCase()?.substring(0, 7)
         val prefix = if (isOfficial) "dev" else "unofficial"
-        if (!shortCommit.isNullOrEmpty()) "$prefix-$shortCommit" else "SNAPSHOT"
+        if (!shortCommit.isNullOrEmpty()) "$prefix-$shortCommit" else "Release"
     }
 }
-val versionRoot = System.getenv("VERSION_ROOT") ?: "3.5"
+val versionRoot = System.getenv("VERSION_ROOT") ?: "3.1.1"
 val versionType = System.getenv("VERSION_TYPE") ?: if (isOfficial) "nightly" else "unofficial"
 
 val microsoftAuthId = System.getenv("MICROSOFT_AUTH_ID") ?: ""
@@ -115,7 +115,7 @@ tasks.getByName<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("sha
 
     manifest {
         attributes(
-            "Created-By" to "Copyright(c) 2013-2023 huangyuhui.",
+            "Created-By" to "Copyright(c) 2023 illusion.",
             "Main-Class" to "org.jackhuang.hmcl.Main",
             "Multi-Release" to "true",
             "Implementation-Version" to project.version,

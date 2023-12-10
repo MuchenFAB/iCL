@@ -122,25 +122,6 @@ public class DownloadPage extends DecoratorAnimatedPage implements DecoratorPage
                         item.setLeftGraphic(wrap(SVG::puzzle));
                         item.activeProperty().bind(tab.getSelectionModel().selectedItemProperty().isEqualTo(modTab));
                         item.setOnAction(e -> tab.select(modTab));
-                    })
-                    .addNavigationDrawerItem(item -> {
-                        item.setTitle(i18n("resourcepack"));
-                        item.setLeftGraphic(wrap(SVG::textureBox));
-                        item.activeProperty().bind(tab.getSelectionModel().selectedItemProperty().isEqualTo(resourcePackTab));
-                        item.setOnAction(e -> selectTabIfCurseForgeAvailable(resourcePackTab));
-                    })
-
-                    .addNavigationDrawerItem(item -> {
-                        item.setTitle(i18n("download.curseforge.customization"));
-                        item.setLeftGraphic(wrap(SVG::script));
-                        item.activeProperty().bind(tab.getSelectionModel().selectedItemProperty().isEqualTo(customizationTab));
-                        item.setOnAction(e -> selectTabIfCurseForgeAvailable(customizationTab));
-                    })
-                    .addNavigationDrawerItem(item -> {
-                        item.setTitle(i18n("world"));
-                        item.setLeftGraphic(wrap(SVG::earth));
-                        item.activeProperty().bind(tab.getSelectionModel().selectedItemProperty().isEqualTo(worldTab));
-                        item.setOnAction(e -> selectTabIfCurseForgeAvailable(worldTab));
                     });
             FXUtils.setLimitWidth(sideBar, 200);
             setLeft(sideBar);

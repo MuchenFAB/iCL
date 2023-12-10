@@ -190,7 +190,7 @@ public final class Launcher extends Application {
         if (Files.exists(Metadata.HMCL_DIRECTORY))
             files.add(Metadata.HMCL_DIRECTORY.toString());
 
-        Path mcDir = Paths.get(".minecraft").toAbsolutePath().normalize();
+        Path mcDir = Paths.get(".Minecraft").toAbsolutePath().normalize();
         if (Files.exists(mcDir))
             files.add(mcDir.toString());
 
