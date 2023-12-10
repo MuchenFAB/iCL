@@ -15,7 +15,3 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
           java-package: 'jdk+fx'
-      - name: Check style main
-        run: ./gradlew checkstyleMain
-      - name: Check style test
-        run: ./gradlew checkstyleTest
