@@ -31,7 +31,6 @@ import javafx.scene.layout.VBox;
 import org.jackhuang.hmcl.auth.Account;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorAccount;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorServer;
-import org.jackhuang.hmcl.game.TexturesLoader;
 import org.jackhuang.hmcl.setting.Accounts;
 import org.jackhuang.hmcl.setting.Theme;
 import org.jackhuang.hmcl.task.Schedulers;
@@ -67,7 +66,6 @@ public class AccountListItemSkin extends SkinBase<AccountListItem> {
         center.setAlignment(Pos.CENTER_LEFT);
 
         Canvas canvas = new Canvas(32, 32);
-        TexturesLoader.bindAvatar(canvas, skinnable.getAccount());
 
         Label title = new Label();
         title.getStyleClass().add("title");

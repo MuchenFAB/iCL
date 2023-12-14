@@ -41,13 +41,11 @@ import org.jackhuang.hmcl.auth.NoSelectedCharacterException;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorAccountFactory;
 import org.jackhuang.hmcl.auth.authlibinjector.AuthlibInjectorServer;
 import org.jackhuang.hmcl.auth.authlibinjector.BoundAuthlibInjectorAccountFactory;
-import org.jackhuang.hmcl.auth.microsoft.MicrosoftAccountFactory;
 import org.jackhuang.hmcl.auth.offline.OfflineAccountFactory;
 import org.jackhuang.hmcl.auth.yggdrasil.GameProfile;
 import org.jackhuang.hmcl.auth.yggdrasil.YggdrasilAccountFactory;
 import org.jackhuang.hmcl.auth.yggdrasil.YggdrasilService;
 import org.jackhuang.hmcl.game.OAuthServer;
-import org.jackhuang.hmcl.game.TexturesLoader;
 import org.jackhuang.hmcl.setting.Accounts;
 import org.jackhuang.hmcl.setting.Theme;
 import org.jackhuang.hmcl.task.Schedulers;
@@ -80,7 +78,6 @@ import static org.jackhuang.hmcl.util.javafx.ExtendedProperties.classPropertyFor
 
 public class CreateAccountPane extends JFXDialogLayout implements DialogAware {
 
-    private static final String MICROSOFT_ACCOUNT_EDIT_PROFILE_URL = "https://support.microsoft.com/account-billing/837badbc-999e-54d2-2617-d19206b9540a";
     private final Label lblErrorMessage;
     private final JFXButton btnAccept;
     private final SpinnerPane spinner;
@@ -200,9 +197,6 @@ public class CreateAccountPane extends JFXDialogLayout implements DialogAware {
         spinner.showSpinner();
         lblErrorMessage.setText("");
 
-        if (!(factory instanceof MicrosoftAccountFactory)) {
-            body.setDisable(true);
-        }
 
         String username;
         String password;
@@ -533,7 +527,6 @@ public class CreateAccountPane extends JFXDialogLayout implements DialogAware {
             Platform.runLater(() -> {
                 for (GameProfile profile : profiles) {
                     Canvas portraitCanvas = new Canvas(32, 32);
-                    TexturesLoader.bindAvatar(portraitCanvas, service, profile.getId());
 
                     IconedItem accountItem = new IconedItem(portraitCanvas, profile.getName());
                     accountItem.setOnMouseClicked(e -> {

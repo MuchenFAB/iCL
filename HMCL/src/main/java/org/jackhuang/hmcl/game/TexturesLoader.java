@@ -28,8 +28,10 @@ import javafx.scene.image.PixelWriter;
 import org.jackhuang.hmcl.Metadata;
 import org.jackhuang.hmcl.auth.Account;
 import org.jackhuang.hmcl.auth.ServerResponseMalformedException;
-import org.jackhuang.hmcl.auth.microsoft.MicrosoftAccount;
-import org.jackhuang.hmcl.auth.yggdrasil.*;
+import org.jackhuang.hmcl.auth.yggdrasil.Texture;
+import org.jackhuang.hmcl.auth.yggdrasil.TextureModel;
+import org.jackhuang.hmcl.auth.yggdrasil.TextureType;
+import org.jackhuang.hmcl.auth.yggdrasil.YggdrasilService;
 import org.jackhuang.hmcl.task.FileDownloadTask;
 import org.jackhuang.hmcl.util.ResourceNotFoundError;
 import org.jackhuang.hmcl.util.StringUtils;
@@ -307,18 +309,6 @@ public final class TexturesLoader {
         }
     }
 
-    public static void bindAvatar(Canvas canvas, YggdrasilService service, UUID uuid) {
-        fxAvatarBinding(canvas, skinBinding(service, uuid));
-    }
-
-    public static void bindAvatar(Canvas canvas, Account account) {
-        if (account instanceof YggdrasilAccount || account instanceof MicrosoftAccount)
-            fxAvatarBinding(canvas, skinBinding(account));
-        else {
-            unbindAvatar(canvas);
-            drawAvatar(canvas, getDefaultSkin(TextureModel.detectUUID(account.getUUID())).image);
-        }
-    }
 
     public static void unbindAvatar(Canvas canvas) {
         synchronized (SkinBindingChangeListener.hole) {

@@ -64,7 +64,6 @@ public class AccountAdvancedListItem extends AdvancedListItem {
                 titleProperty().bind(BindingMapping.of(account, Account::getCharacter));
                 subtitleProperty().bind(accountSubtitle(account));
                 tooltip.textProperty().bind(accountTooltip(account));
-                TexturesLoader.bindAvatar(canvas, account);
             }
         }
     };
