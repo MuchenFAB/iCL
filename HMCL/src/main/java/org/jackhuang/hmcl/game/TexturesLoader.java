@@ -63,6 +63,7 @@ public final class TexturesLoader {
     private TexturesLoader() {
     }
 
+
     // ==== Texture Loading ====
     public static class LoadedTexture {
         private final Image image;

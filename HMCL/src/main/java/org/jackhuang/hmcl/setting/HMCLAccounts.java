@@ -20,18 +20,12 @@ package org.jackhuang.hmcl.setting;
 import com.google.gson.annotations.SerializedName;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import org.jackhuang.hmcl.auth.OAuth;
 import org.jackhuang.hmcl.task.Schedulers;
 import org.jackhuang.hmcl.task.Task;
-import org.jackhuang.hmcl.util.gson.JsonUtils;
 import org.jackhuang.hmcl.util.gson.UUIDTypeAdapter;
 import org.jackhuang.hmcl.util.io.HttpRequest;
-import org.jackhuang.hmcl.util.io.NetworkUtils;
 
 import java.util.UUID;
-
-import static org.jackhuang.hmcl.util.Lang.mapOf;
-import static org.jackhuang.hmcl.util.Pair.pair;
 
 public final class HMCLAccounts {
 
@@ -57,36 +51,7 @@ public final class HMCLAccounts {
         String scope = "openid offline_access";
 
         return Task.supplyAsync(() -> {
-            OAuth.Session session = Accounts.OAUTH_CALLBACK.startServer();
-            Accounts.OAUTH_CALLBACK.openBrowser(NetworkUtils.withQuery(
-                    "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-                    mapOf(
-                            pair("client_id", Accounts.OAUTH_CALLBACK.getClientId()),
-                            pair("response_type", "id_token code"),
-                            pair("response_mode", "form_post"),
-                            pair("scope", scope),
-                            pair("redirect_uri", session.getRedirectURI()),
-                            pair("nonce", nonce)
-                    )));
-            String code = session.waitFor();
-
-            // Authorization Code -> Token
-            String responseText = HttpRequest.POST("https://login.microsoftonline.com/common/oauth2/v2.0/token")
-                    .form(mapOf(pair("client_id", Accounts.OAUTH_CALLBACK.getClientId()), pair("code", code),
-                            pair("grant_type", "authorization_code"), pair("client_secret", Accounts.OAUTH_CALLBACK.getClientSecret()),
-                            pair("redirect_uri", session.getRedirectURI()), pair("scope", scope)))
-                    .getString();
-            OAuth.AuthorizationResponse response = JsonUtils.fromNonNullJson(responseText,
-                    OAuth.AuthorizationResponse.class);
-
-            HMCLAccountProfile profile = HttpRequest.GET("https://hmcl.huangyuhui.net/api/user")
-                    .header("Token-Type", response.tokenType)
-                    .header("Access-Token", response.accessToken)
-                    .header("Authorization-Provider", "microsoft")
-                    .authorization("Bearer", session.getIdToken())
-                    .getJson(HMCLAccountProfile.class);
-
-            return new HMCLAccount("microsoft", profile.nickname, profile.email, profile.role, session.getIdToken(), response.tokenType, response.accessToken, response.refreshToken);
+            return new HMCLAccount(null, null, null, null, null, null, null, null);
         }).thenAcceptAsync(Schedulers.javafx(), account -> {
             setAccount(account);
         });
