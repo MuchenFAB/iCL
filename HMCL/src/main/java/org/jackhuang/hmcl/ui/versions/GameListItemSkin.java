@@ -40,7 +40,7 @@ import static org.jackhuang.hmcl.util.i18n.I18n.i18n;
 
 public class GameListItemSkin extends SkinBase<GameListItem> {
     private static GameListItem currentSkinnable;
-    private static Lazy<JFXPopup> popup = new Lazy<>(() -> {
+    private static final Lazy<JFXPopup> popup = new Lazy<>(() -> {
         PopupMenu menu = new PopupMenu();
         JFXPopup popup = new JFXPopup(menu);
 
@@ -48,7 +48,6 @@ public class GameListItemSkin extends SkinBase<GameListItem> {
                 new MenuSeparator(),
                 new IconedMenuItem(FXUtils.limitingSize(SVG.gearOutline(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.manage"), FXUtils.withJFXPopupClosing(() -> currentSkinnable.modifyGameSettings(), popup)),
                 new MenuSeparator(),
-                new IconedMenuItem(FXUtils.limitingSize(SVG.pencilOutline(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.rename"), FXUtils.withJFXPopupClosing(() -> currentSkinnable.rename(), popup)),
                 new IconedMenuItem(FXUtils.limitingSize(SVG.copy(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.duplicate"), FXUtils.withJFXPopupClosing(() -> currentSkinnable.duplicate(), popup)),
                 new IconedMenuItem(FXUtils.limitingSize(SVG.deleteOutline(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("version.manage.remove"), FXUtils.withJFXPopupClosing(() -> currentSkinnable.remove(), popup)),
                 new IconedMenuItem(FXUtils.limitingSize(SVG.export(Theme.blackFillBinding(), 14, 14), 14, 14), i18n("modpack.export"), FXUtils.withJFXPopupClosing(() -> currentSkinnable.export(), popup)),

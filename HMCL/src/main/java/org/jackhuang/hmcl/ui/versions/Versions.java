@@ -227,10 +227,7 @@ public final class Versions {
         });
     }
 
-    public static void testGame(Profile profile, String id) {
-        launch(profile, id, LauncherHelper::setTestMode);
-    }
-
+    
     private static boolean checkVersionForLaunching(Profile profile, String id) {
         if (id == null || !profile.getRepository().isLoaded() || !profile.getRepository().hasVersion(id)) {
             Controllers.dialog(i18n("version.empty.launch"), i18n("launch.failed"), MessageDialogPane.MessageType.ERROR, () -> {

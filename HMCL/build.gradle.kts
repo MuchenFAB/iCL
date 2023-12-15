@@ -12,7 +12,8 @@ plugins {
 }
 
 val isOfficial = System.getenv("HMCL_SIGNATURE_KEY") != null
-        || (System.getenv("GITHUB_REPOSITORY_OWNER") == "huanghongxun" && System.getenv("GITHUB_BASE_REF").isNullOrEmpty())
+        || (System.getenv("GITHUB_REPOSITORY_OWNER") == "illusion Craft" && System.getenv("GITHUB_BASE_REF")
+    .isNullOrEmpty())
 
 val buildNumber = System.getenv("BUILD_NUMBER")?.toInt().let { number ->
     val offset = System.getenv("BUILD_NUMBER_OFFSET")?.toInt() ?: 0
@@ -24,11 +25,9 @@ val buildNumber = System.getenv("BUILD_NUMBER")?.toInt().let { number ->
         if (!shortCommit.isNullOrEmpty()) "$prefix-$shortCommit" else "Release"
     }
 }
-val versionRoot = System.getenv("VERSION_ROOT") ?: "3.1.1"
+val versionRoot = System.getenv("VERSION_ROOT") ?: "3.1.2"
 val versionType = System.getenv("VERSION_TYPE") ?: if (isOfficial) "nightly" else "unofficial"
 
-val microsoftAuthId = System.getenv("MICROSOFT_AUTH_ID") ?: ""
-val microsoftAuthSecret = System.getenv("MICROSOFT_AUTH_SECRET") ?: ""
 val curseForgeApiKey = System.getenv("CURSEFORGE_API_KEY") ?: ""
 
 version = "$versionRoot.$buildNumber"
@@ -119,8 +118,6 @@ tasks.getByName<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("sha
             "Main-Class" to "org.jackhuang.hmcl.Main",
             "Multi-Release" to "true",
             "Implementation-Version" to project.version,
-            "Microsoft-Auth-Id" to microsoftAuthId,
-            "Microsoft-Auth-Secret" to microsoftAuthSecret,
             "CurseForge-Api-Key" to curseForgeApiKey,
             "Build-Channel" to versionType,
             "Class-Path" to "pack200.jar",

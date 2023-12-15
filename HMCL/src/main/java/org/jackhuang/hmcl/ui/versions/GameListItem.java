@@ -65,9 +65,6 @@ public class GameListItem extends Control {
         selected.set(version.equals(profile.getSelectedVersion()));
     }
 
-    public void rename() {
-        Versions.renameVersion(profile, version);
-    }
 
     public void duplicate() {
         Versions.duplicateVersion(profile, version);
