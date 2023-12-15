@@ -9,10 +9,3 @@ jobs:
   check-update:
     if: ${{ github.repository_owner == 'huanghongxun' }}
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Fetch tags
-        run: git fetch --all --tags
-      - name: Install tools
-        run: sudo apt-get install -y jq
-      - name: Fetch last version
