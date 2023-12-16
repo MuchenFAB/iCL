@@ -71,12 +71,6 @@ public class LauncherSettingsPage extends DecoratorAnimatedPage implements Decor
                         settingsItem.setOnAction(e -> tab.select(gameTab));
                     })
                     .startCategory(i18n("launcher"))
-                    .addNavigationDrawerItem(settingsItem -> {
-                        settingsItem.setTitle(i18n("settings.launcher.general"));
-                        settingsItem.setLeftGraphic(wrap(SVG::applicationOutline));
-                        settingsItem.activeProperty().bind(tab.getSelectionModel().selectedItemProperty().isEqualTo(settingsTab));
-                        settingsItem.setOnAction(e -> tab.select(settingsTab));
-                    })
                     .addNavigationDrawerItem(personalizationItem -> {
                         personalizationItem.setTitle(i18n("settings.launcher.appearance"));
                         personalizationItem.setLeftGraphic(wrap(SVG::styleOutline));

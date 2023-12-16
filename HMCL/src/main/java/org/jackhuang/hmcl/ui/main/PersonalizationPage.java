@@ -19,20 +19,16 @@ package org.jackhuang.hmcl.ui.main;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.effects.JFXDepthManager;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.When;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.jackhuang.hmcl.setting.EnumBackgroundImage;
 import org.jackhuang.hmcl.setting.Theme;
@@ -48,7 +44,9 @@ import java.util.Arrays;
 import static org.jackhuang.hmcl.setting.ConfigHolder.config;
 import static org.jackhuang.hmcl.util.i18n.I18n.i18n;
 
+
 public class PersonalizationPage extends StackPane {
+
 
     public PersonalizationPage() {
         VBox content = new VBox(10);
@@ -67,20 +65,18 @@ public class PersonalizationPage extends StackPane {
             Label left = new Label(i18n("settings.launcher.theme"));
             BorderPane.setAlignment(left, Pos.CENTER_LEFT);
             themePane.setLeft(left);
-
             StackPane themeColorPickerContainer = new StackPane();
             themeColorPickerContainer.setMinHeight(30);
             themePane.setRight(themeColorPickerContainer);
 
-            ColorPicker picker = new ColorPicker(Color.web(Theme.getTheme().getColor()));
-            picker.getCustomColors().setAll(Theme.SUGGESTED_COLORS);
-            picker.setOnAction(e -> {
-                Theme theme = Theme.custom(Theme.getColorDisplayName(picker.getValue()));
-                config().setTheme(theme);
-                Controllers.getScene().getStylesheets().setAll(theme.getStylesheets(config().getLauncherFontFamily()));
-            });
-            themeColorPickerContainer.getChildren().setAll(picker);
-            Platform.runLater(() -> JFXDepthManager.setDepth(picker, 0));
+//            ColorPicker picker = new ColorPicker(Color.web(Theme.getTheme().getColor()));
+//            picker.setOnAction(e -> {
+//                Theme theme = Theme.custom(Theme.getColorDisplayName(picker.getValue()));
+//                config().setTheme(theme);
+//                Controllers.getScene().getStylesheets().setAll(theme.getStylesheets(config().getLauncherFontFamily()));
+//            });
+//            themeColorPickerContainer.getChildren().setAll(picker);
+//            Platform.runLater(() -> JFXDepthManager.setDepth(picker, 0));
         }
         {
             OptionToggleButton titleTransparentButton = new OptionToggleButton();
@@ -88,13 +84,59 @@ public class PersonalizationPage extends StackPane {
             titleTransparentButton.selectedProperty().bindBidirectional(config().titleTransparentProperty());
             titleTransparentButton.setTitle(i18n("settings.launcher.title_transparent"));
         }
-        {
-            OptionToggleButton animationButton = new OptionToggleButton();
-            themeList.getContent().add(animationButton);
-            animationButton.selectedProperty().bindBidirectional(config().animationDisabledProperty());
-            animationButton.setTitle(i18n("settings.launcher.turn_off_animations"));
-        }
         content.getChildren().addAll(ComponentList.createComponentListTitle(i18n("settings.launcher.appearance")), themeList);
+
+        {
+            ComponentSublist fontPane = new ComponentSublist();
+            fontPane.setTitle(i18n("settings.launcher.font"));
+
+            {
+                VBox vbox = new VBox();
+                vbox.setSpacing(5);
+
+                {
+                    BorderPane borderPane = new BorderPane();
+                    vbox.getChildren().add(borderPane);
+                    {
+                        Label left = new Label(i18n("settings.launcher.font"));
+                        BorderPane.setAlignment(left, Pos.CENTER_LEFT);
+                        borderPane.setLeft(left);
+                    }
+
+                    {
+                        HBox hBox = new HBox();
+                        hBox.setSpacing(8);
+
+                        FontComboBox cboFont = new FontComboBox();
+                        cboFont.valueProperty().bindBidirectional(config().launcherFontFamilyProperty());
+
+                        JFXButton clearButton = new JFXButton();
+                        clearButton.getStyleClass().add("toggle-icon4");
+                        clearButton.setGraphic(SVG.restore(Theme.blackFillBinding(), -1, -1));
+                        clearButton.setOnAction(e -> config().setLauncherFontFamily(null));
+
+                        hBox.getChildren().setAll(cboFont, clearButton);
+
+                        borderPane.setRight(hBox);
+                    }
+                }
+
+                Label lblFontDisplay = new Label("illusion Craft Launcher");
+                lblFontDisplay.fontProperty().bind(Bindings.createObjectBinding(
+                        () -> Font.font(config().getLauncherFontFamily(), 12),
+                        config().launcherFontFamilyProperty()));
+                config().launcherFontFamilyProperty().addListener((a, b, newValue) -> {
+                    Controllers.getScene().getStylesheets().setAll(Theme.getTheme().getStylesheets(newValue));
+                });
+
+                vbox.getChildren().add(lblFontDisplay);
+
+                fontPane.getContent().add(vbox);
+            }
+
+            content.getChildren().addAll(ComponentList.createComponentListTitle(i18n("settings.launcher.font")), fontPane);
+        }
+
 
         {
             ComponentList componentList = new ComponentList();
@@ -111,15 +153,12 @@ public class PersonalizationPage extends StackPane {
                     new MultiFileItem.Option<>(i18n("launcher.background.translucent"), EnumBackgroundImage.TRANSLUCENT),
                     new MultiFileItem.FileOption<>(i18n("settings.custom"), EnumBackgroundImage.CUSTOM)
                             .setChooserTitle(i18n("launcher.background.choose"))
-                            .bindBidirectional(config().backgroundImageProperty()),
-                    new MultiFileItem.StringOption<>(i18n("launcher.background.network"), EnumBackgroundImage.NETWORK)
-                            .setValidators(new URLValidator(true))
-                            .bindBidirectional(config().backgroundImageUrlProperty())
+                            .bindBidirectional(config().backgroundImageProperty())
             ));
             backgroundItem.selectedDataProperty().bindBidirectional(config().backgroundImageTypeProperty());
             backgroundSublist.subtitleProperty().bind(
-                    new When(backgroundItem.selectedDataProperty().isEqualTo(EnumBackgroundImage.DEFAULT))
-                            .then(i18n("launcher.background.default"))
+                    new When(backgroundItem.selectedDataProperty().isEqualTo(EnumBackgroundImage.TRANSLUCENT))
+                            .then(i18n("launcher.background.translucent"))
                             .otherwise(config().backgroundImageProperty()));
 
             componentList.getContent().add(backgroundItem);
@@ -174,57 +213,6 @@ public class PersonalizationPage extends StackPane {
             }
 
             content.getChildren().addAll(ComponentList.createComponentListTitle(i18n("settings.launcher.log")), logPane);
-        }
-
-        {
-            ComponentSublist fontPane = new ComponentSublist();
-            fontPane.setTitle(i18n("settings.launcher.font"));
-
-            {
-                VBox vbox = new VBox();
-                vbox.setSpacing(5);
-
-                {
-                    BorderPane borderPane = new BorderPane();
-                    vbox.getChildren().add(borderPane);
-                    {
-                        Label left = new Label(i18n("settings.launcher.font"));
-                        BorderPane.setAlignment(left, Pos.CENTER_LEFT);
-                        borderPane.setLeft(left);
-                    }
-
-                    {
-                        HBox hBox = new HBox();
-                        hBox.setSpacing(8);
-
-                        FontComboBox cboFont = new FontComboBox();
-                        cboFont.valueProperty().bindBidirectional(config().launcherFontFamilyProperty());
-
-                        JFXButton clearButton = new JFXButton();
-                        clearButton.getStyleClass().add("toggle-icon4");
-                        clearButton.setGraphic(SVG.restore(Theme.blackFillBinding(), -1, -1));
-                        clearButton.setOnAction(e -> config().setLauncherFontFamily(null));
-
-                        hBox.getChildren().setAll(cboFont, clearButton);
-
-                        borderPane.setRight(hBox);
-                    }
-                }
-
-                Label lblFontDisplay = new Label("illusion Craft Launcher");
-                lblFontDisplay.fontProperty().bind(Bindings.createObjectBinding(
-                        () -> Font.font(config().getLauncherFontFamily(), 12),
-                        config().launcherFontFamilyProperty()));
-                config().launcherFontFamilyProperty().addListener((a, b, newValue) -> {
-                    Controllers.getScene().getStylesheets().setAll(Theme.getTheme().getStylesheets(newValue));
-                });
-
-                vbox.getChildren().add(lblFontDisplay);
-
-                fontPane.getContent().add(vbox);
-            }
-
-            content.getChildren().addAll(ComponentList.createComponentListTitle(i18n("settings.launcher.font")), fontPane);
         }
     }
 }
